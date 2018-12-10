@@ -1,6 +1,6 @@
 {
     "name": "mbed-rosserial-lib",
-    "configuration": {
+    "config": {
         "default_tx_pin": {
             "help": "Default library's Serial TX pin.",
             "macro_name": "ROSSERIAL_TX",
