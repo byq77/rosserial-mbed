@@ -13,7 +13,7 @@
 
 class MbedHardware {
   public:
-    MbedHardware(PinName tx, PinName rx, long baud = 57600)
+    MbedHardware(PinName tx, PinName rx, long baud = ROSSERIAL_BAUDRATE)
       :iostream(tx, rx){
       baud_ = baud;
       t.start();
@@ -21,7 +21,7 @@ class MbedHardware {
 
     MbedHardware()
       :iostream(ROSSERIAL_TX, ROSSERIAL_RX) {
-        baud_ = 57600;
+        baud_ = ROSSERIAL_BAUDRATE;
         t.start();
     }
 

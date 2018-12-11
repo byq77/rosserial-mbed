@@ -6,7 +6,7 @@
 #include "ros/msg.h"
 #include "sensor_msgs/RegionOfInterest.h"
 #include "ros/duration.h"
-#include "ros/time.h"
+#include "ros/ros_time.h"
 
 namespace polled_camera
 {

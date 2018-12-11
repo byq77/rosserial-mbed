@@ -32,10 +32,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ROS_TIME_H_
-#define ROS_TIME_H_
+#ifndef __ROS_TIME_H__
+#define __ROS_TIME_H__
 
-#include "ros/duration.h"
+#include "duration.h"
 #include <math.h>
 #include <stdint.h>
 

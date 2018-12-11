@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "ros/msg.h"
 #include "std_msgs/Header.h"
-#include "ros/time.h"
+#include "ros/ros_time.h"
 
 namespace sensor_msgs
 {

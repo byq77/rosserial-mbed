@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "ros/msg.h"
 #include "sensor_msgs/PointCloud2.h"
-#include "ros/time.h"
+#include "ros/ros_time.h"
 
 namespace laser_assembler
 {

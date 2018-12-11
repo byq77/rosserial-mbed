@@ -32,7 +32,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "ros/time.h"
+#include "ros/ros_time.h"
 
 namespace ros
 {

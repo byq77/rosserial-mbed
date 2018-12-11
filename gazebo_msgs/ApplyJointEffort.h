@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "ros/msg.h"
 #include "ros/duration.h"
-#include "ros/time.h"
+#include "ros/ros_time.h"
 
 namespace gazebo_msgs
 {

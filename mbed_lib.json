@@ -1,15 +1,20 @@
 {
     "name": "mbed-rosserial-lib",
     "config": {
-        "default_tx_pin": {
-            "help": "Default library's Serial TX pin.",
+        "tx_pin": {
+            "help": "Default library Serial TX pin.",
             "macro_name": "ROSSERIAL_TX",
-            "value": "RPI_SERIAL_TX"
+            "value": "USBTX"
         },
-        "default_rx_pin": {
-            "help": "Default library's Serial RX pin.",
+        "rx_pin": {
+            "help": "Default library Serial RX pin.",
             "macro_name": "ROSSERIAL_RX",
-            "value": "RPI_SERIAL_RX"
+            "value": "USBRX"
+        },
+        "rx_baudrate": {
+            "help": "Default library Serial baudrate.",
+            "macro_name": "ROSSERIAL_BAUDRATE",
+            "value": "115200"
         }
     }
 }

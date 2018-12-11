@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "ros/msg.h"
-#include "ros/time.h"
+#include "ros/ros_time.h"
 #include "geometry_msgs/Pose.h"
 
 namespace nav_msgs
