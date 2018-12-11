@@ -11,7 +11,7 @@
             "macro_name": "ROSSERIAL_RX",
             "value": "USBRX"
         },
-        "rx_baudrate": {
+        "baudrate": {
             "help": "Default library Serial baudrate.",
             "macro_name": "ROSSERIAL_BAUDRATE",
             "value": "115200"
