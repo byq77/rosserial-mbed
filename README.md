@@ -1,4 +1,4 @@
-# rosserial-mbed-lib
+# rosserial-mbed
 
 This repository is a slightly modified content of `ros_lib` directory created accordingly to [rosserial MBED Setup](http://wiki.ros.org/rosserial_mbed/Tutorials/rosserial_mbed%20Setup) tutorial from official ros documentation.
 
@@ -24,5 +24,8 @@ Example:
     }
 }
 ```
+
+To add this library to your project just run `mbed add https://github.com/byq77/rosserial-mbed.git` in your project's `lib` directory.
+
 
 
