@@ -17,15 +17,12 @@ Example:
 {
     "target_overrides":{
         "*": {
-            "mbed-rosserial-lib.tx_pin": "MY_TX_PIN",
-            "mbed-rosserial-lib.rx_pin": "MY_RX_PIN",
-            "mbed-rosserial-lib.baudrate": "230400"
+            "rosserial-mbed.tx_pin": "MY_TX_PIN",
+            "rosserial-mbed.rx_pin": "MY_RX_PIN",
+            "rosserial-mbed.baudrate": "230400"
         }
     }
 }
 ```
 
 To add this library to your project just run `mbed add https://github.com/byq77/rosserial-mbed.git` in your project's `lib` directory.
-
-
-
