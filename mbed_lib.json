@@ -15,6 +15,16 @@
             "help": "Default library Serial baudrate.",
             "macro_name": "ROSSERIAL_BAUDRATE",
             "value": "115200"
+        },
+        "in_buffer_size": {
+            "help": "Input buffer size.",
+            "macro_name": "ROSSERIAL_INPUT_BUFFER_SIZE",
+            "value": 512
+        },
+        "out_buffer_size": {
+            "help": "Output buffer size.",
+            "macro_name": "ROSSERIAL_OUTPUT_BUFFER_SIZE",
+            "value": 512
         }
     }
 }
