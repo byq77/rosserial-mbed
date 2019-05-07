@@ -19,7 +19,7 @@ Example:
         "*": {
             "rosserial-mbed.tx_pin": "MY_TX_PIN",
             "rosserial-mbed.rx_pin": "MY_RX_PIN",
-            "rosserial-mbed.baudrate": "230400"
+            "rosserial-mbed.baudrate": 230400
         }
     }
 }
