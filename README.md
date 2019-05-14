@@ -1,6 +1,8 @@
 # rosserial-mbed
 
-This repository is a slightly modified content of `ros_lib` directory created accordingly to [rosserial MBED Setup](http://wiki.ros.org/rosserial_mbed/Tutorials/rosserial_mbed%20Setup) tutorial from official ros documentation.
+Version: v1.1.0
+
+This repository is a modified version of `ros_lib` directory created accordingly to [rosserial MBED Setup](http://wiki.ros.org/rosserial_mbed/Tutorials/rosserial_mbed%20Setup) tutorial from official ros documentation.
 
 Condensed, step by step recipe:
 1. `$ mkdir -p ~/ros_workspace/src && cd ros_workspace/src && catkin_init_workspace`

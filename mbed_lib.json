@@ -1,4 +1,5 @@
 {
+    "macros": ["ROSSERIAL_VERSION=\"1.1.0\""],
     "name": "rosserial-mbed",
     "config": {
         "tx_pin": {
@@ -25,6 +26,11 @@
             "help": "Output buffer size.",
             "macro_name": "ROSSERIAL_OUTPUT_BUFFER_SIZE",
             "value": 512
+        },
+        "rtos_kernel_ms_tick": {
+            "help": "Use Kernel::get_ms_count() insted Ticker API.",
+            "macro_name": "ROSSERIAL_RTOS_KERNEL_MS_TICK",
+            "value": 0
         }
     }
 }

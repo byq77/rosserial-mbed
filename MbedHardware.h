@@ -16,13 +16,17 @@ class MbedHardware {
     MbedHardware(PinName tx, PinName rx, long baud = ROSSERIAL_BAUDRATE)
       :iostream(tx, rx){
       baud_ = baud;
+#if ROSSERIAL_RTOS_KERNEL_MS_TICK == 0
       t.start();
+#endif
     }
 
     MbedHardware()
       :iostream(ROSSERIAL_TX, ROSSERIAL_RX) {
         baud_ = ROSSERIAL_BAUDRATE;
+#if ROSSERIAL_RTOS_KERNEL_MS_TICK == 0
         t.start();
+#endif
     }
 
     void setBaud(long baud){
@@ -47,9 +51,16 @@ class MbedHardware {
              iostream.putc(data[i]);
     }
 
-    unsigned long time(){return t.read_ms();}
+    unsigned long time()
+    {
+#if ROSSERIAL_RTOS_KERNEL_MS_TICK
+      return Kernel::get_ms_count();
+#else
+      return t.read_ms();
+#endif
+    }
 
-protected:
+  protected:
     BufferedSerial iostream;
     long baud_;
     Timer t;

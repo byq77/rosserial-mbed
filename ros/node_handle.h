@@ -389,9 +389,20 @@ public:
     last_sync_receive_time = hardware_.time();
   }
 
+
+
   Time now()
   {
     uint32_t ms = hardware_.time();
+    Time current_time;
+    current_time.sec = ms / 1000 + sec_offset;
+    current_time.nsec = (ms % 1000) * 1000000UL + nsec_offset;
+    normalizeSecNSec(current_time.sec, current_time.nsec);
+    return current_time;
+  }
+
+  Time now(uint32_t ms)
+  {
     Time current_time;
     current_time.sec = ms / 1000 + sec_offset;
     current_time.nsec = (ms % 1000) * 1000000UL + nsec_offset;
