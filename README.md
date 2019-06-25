@@ -1,6 +1,6 @@
 # rosserial-mbed
 
-Version: v1.1.0
+Version: v1.1.1
 
 This repository is a modified version of `ros_lib` directory created accordingly to [rosserial MBED Setup](http://wiki.ros.org/rosserial_mbed/Tutorials/rosserial_mbed%20Setup) tutorial from official ros documentation.
 

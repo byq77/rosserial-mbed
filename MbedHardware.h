@@ -14,7 +14,7 @@
 class MbedHardware {
   public:
     MbedHardware(PinName tx, PinName rx, long baud = ROSSERIAL_BAUDRATE)
-      :iostream(tx, rx){
+      :iostream(tx, rx, ROSSERIAL_INPUT_BUFFER_SIZE){
       baud_ = baud;
 #if ROSSERIAL_RTOS_KERNEL_MS_TICK == 0
       t.start();
@@ -22,7 +22,7 @@ class MbedHardware {
     }
 
     MbedHardware()
-      :iostream(ROSSERIAL_TX, ROSSERIAL_RX) {
+      :iostream(ROSSERIAL_TX, ROSSERIAL_RX, ROSSERIAL_INPUT_BUFFER_SIZE) {
         baud_ = ROSSERIAL_BAUDRATE;
 #if ROSSERIAL_RTOS_KERNEL_MS_TICK == 0
         t.start();
