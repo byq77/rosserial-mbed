@@ -211,6 +211,9 @@ public:
 
   virtual int spinOnce()
   {
+    static uint8_t chunk_buffer[32];
+    static uint8_t * data_ptr;
+
     /* restart if timed out */
     uint32_t c_time = hardware_.time();
     if ((c_time - last_sync_receive_time) > (SYNC_SECONDS * 2200))
@@ -243,121 +246,131 @@ public:
           return SPIN_TIMEOUT;
         }
       }
-      int data = hardware_.read();
-      if (data < 0)
+      
+      int num = hardware_.read(chunk_buffer,32);
+
+      if (num <= 0)
         break;
-      checksum_ += data;
-      if (mode_ == MODE_MESSAGE)          /* message data being recieved */
+      
+      data_ptr = chunk_buffer;
+
+      while (num)
       {
-        message_in[index_++] = data;
-        bytes_--;
-        if (bytes_ == 0)                 /* is message complete? if so, checksum */
-          mode_ = MODE_MSG_CHECKSUM;
-      }
-      else if (mode_ == MODE_FIRST_FF)
-      {
-        if (data == 0xff)
-        {
-          mode_++;
-          last_msg_timeout_time = c_time + SERIAL_MSG_TIMEOUT;
-        }
-        else if (hardware_.time() - c_time > (SYNC_SECONDS * 1000))
-        {
-          /* We have been stuck in spinOnce too long, return error */
-          configured_ = false;
-          return SPIN_TIMEOUT;
-        }
-      }
-      else if (mode_ == MODE_PROTOCOL_VER)
-      {
-        if (data == PROTOCOL_VER)
-        {
-          mode_++;
-        }
-        else
-        {
-          mode_ = MODE_FIRST_FF;
-          if (configured_ == false)
-            requestSyncTime();  /* send a msg back showing our protocol version */
-        }
-      }
-      else if (mode_ == MODE_SIZE_L)      /* bottom half of message size */
-      {
-        bytes_ = data;
-        index_ = 0;
-        mode_++;
-        checksum_ = data;               /* first byte for calculating size checksum */
-      }
-      else if (mode_ == MODE_SIZE_H)      /* top half of message size */
-      {
-        bytes_ += data << 8;
-        mode_++;
-      }
-      else if (mode_ == MODE_SIZE_CHECKSUM)
-      {
-        if ((checksum_ % 256) == 255)
-          mode_++;
-        else
-          mode_ = MODE_FIRST_FF;          /* Abandon the frame if the msg len is wrong */
-      }
-      else if (mode_ == MODE_TOPIC_L)     /* bottom half of topic id */
-      {
-        topic_ = data;
-        mode_++;
-        checksum_ = data;               /* first byte included in checksum */
-      }
-      else if (mode_ == MODE_TOPIC_H)     /* top half of topic id */
-      {
-        topic_ += data << 8;
-        mode_ = MODE_MESSAGE;
-        if (bytes_ == 0)
-          mode_ = MODE_MSG_CHECKSUM;
-      }
-      else if (mode_ == MODE_MSG_CHECKSUM)    /* do checksum */
-      {
-        mode_ = MODE_FIRST_FF;
-        if ((checksum_ % 256) == 255)
-        {
-          if (topic_ == TopicInfo::ID_PUBLISHER)
+          checksum_ += *data_ptr;
+
+          if (mode_ == MODE_MESSAGE) /* message data being recieved */
           {
-            requestSyncTime();
-            negotiateTopics();
-            last_sync_time = c_time;
-            last_sync_receive_time = c_time;
-            return SPIN_ERR;
+              message_in[index_++] = *data_ptr;
+              bytes_--;
+              if (bytes_ == 0) /* is message complete? if so, checksum */
+                  mode_ = MODE_MSG_CHECKSUM;
           }
-          else if (topic_ == TopicInfo::ID_TIME)
+          else if (mode_ == MODE_FIRST_FF)
           {
-            syncTime(message_in);
+              if (*data_ptr == 0xff)
+              {
+                  mode_++;
+                  last_msg_timeout_time = c_time + SERIAL_MSG_TIMEOUT;
+              }
+              else if (hardware_.time() - c_time > (SYNC_SECONDS * 1000))
+              {
+                  /* We have been stuck in spinOnce too long, return error */
+                  configured_ = false;
+                  return SPIN_TIMEOUT;
+              }
           }
-          else if (topic_ == TopicInfo::ID_PARAMETER_REQUEST)
+          else if (mode_ == MODE_PROTOCOL_VER)
           {
-            req_param_resp.deserialize(message_in);
-            param_recieved = true;
+              if (*data_ptr == PROTOCOL_VER)
+              {
+                  mode_++;
+              }
+              else
+              {
+                  mode_ = MODE_FIRST_FF;
+                  if (configured_ == false)
+                      requestSyncTime(); /* send a msg back showing our protocol version */
+              }
           }
-          else if (topic_ == TopicInfo::ID_TX_STOP)
+          else if (mode_ == MODE_SIZE_L) /* bottom half of message size */
           {
-            configured_ = false;
+              bytes_ = *data_ptr;
+              index_ = 0;
+              mode_++;
+              checksum_ = *data_ptr; /* first byte for calculating size checksum */
           }
-          else
+          else if (mode_ == MODE_SIZE_H) /* top half of message size */
           {
-            if (subscribers[topic_ - 100])
-              subscribers[topic_ - 100]->callback(message_in);
+              bytes_ += *data_ptr << 8;
+              mode_++;
           }
-        }
+          else if (mode_ == MODE_SIZE_CHECKSUM)
+          {
+              if ((checksum_ % 256) == 255)
+                  mode_++;
+              else
+                  mode_ = MODE_FIRST_FF; /* Abandon the frame if the msg len is wrong */
+          }
+          else if (mode_ == MODE_TOPIC_L) /* bottom half of topic id */
+          {
+              topic_ = *data_ptr;
+              mode_++;
+              checksum_ = *data_ptr; /* first byte included in checksum */
+          }
+          else if (mode_ == MODE_TOPIC_H) /* top half of topic id */
+          {
+              topic_ += *data_ptr << 8;
+              mode_ = MODE_MESSAGE;
+              if (bytes_ == 0)
+                  mode_ = MODE_MSG_CHECKSUM;
+          }
+          else if (mode_ == MODE_MSG_CHECKSUM) /* do checksum */
+          {
+              mode_ = MODE_FIRST_FF;
+              if ((checksum_ % 256) == 255)
+              {
+                  if (topic_ == TopicInfo::ID_PUBLISHER)
+                  {
+                      requestSyncTime();
+                      negotiateTopics();
+                      last_sync_time = c_time;
+                      last_sync_receive_time = c_time;
+                      return SPIN_ERR;
+                  }
+                  else if (topic_ == TopicInfo::ID_TIME)
+                  {
+                      syncTime(message_in);
+                  }
+                  else if (topic_ == TopicInfo::ID_PARAMETER_REQUEST)
+                  {
+                      req_param_resp.deserialize(message_in);
+                      param_recieved = true;
+                  }
+                  else if (topic_ == TopicInfo::ID_TX_STOP)
+                  {
+                      configured_ = false;
+                  }
+                  else
+                  {
+                      if (subscribers[topic_ - 100])
+                          subscribers[topic_ - 100]->callback(message_in);
+                  }
+              }
+          }
+          data_ptr++;
+          num--;
       }
     }
 
     /* occasionally sync time */
     if (configured_ && ((c_time - last_sync_time) > (SYNC_SECONDS * 500)))
     {
-      requestSyncTime();
-      last_sync_time = c_time;
+        requestSyncTime();
+        last_sync_time = c_time;
     }
 
     return SPIN_OK;
   }
-
 
   /* Are we connected to the PC? */
   virtual bool connected()

@@ -1,54 +1,42 @@
-/*
- * MbedHardware
- *
- *  Created on: Aug 17, 2011
- *      Author: nucho
- */
-
 #ifndef ROS_MBED_HARDWARE_H_
 #define ROS_MBED_HARDWARE_H_
 
 #include "mbed.h"
-#include "BufferedSerial/BufferedSerial.h"
+#include "UARTSerial.h"
 
-class MbedHardware {
-  public:
+class MbedHardware
+{
+public:
     MbedHardware(PinName tx, PinName rx, long baud = ROSSERIAL_BAUDRATE)
-      :iostream(tx, rx, ROSSERIAL_INPUT_BUFFER_SIZE){
-      baud_ = baud;
-#if ROSSERIAL_RTOS_KERNEL_MS_TICK == 0
-      t.start();
-#endif
-    }
+        : iostream(tx, rx, baud)
+    {}
 
     MbedHardware()
-      :iostream(ROSSERIAL_TX, ROSSERIAL_RX, ROSSERIAL_INPUT_BUFFER_SIZE) {
-        baud_ = ROSSERIAL_BAUDRATE;
+        : iostream(ROSSERIAL_TX, ROSSERIAL_RX, ROSSERIAL_BAUDRATE)
+    {}
+
+    void setBaud(long baud)
+    {
+        this->iostream.set_baud(baud);
+    }
+
+    void init()
+    {
 #if ROSSERIAL_RTOS_KERNEL_MS_TICK == 0
         t.start();
 #endif
+        iostream.set_flow_control(mbed::SerialBase::Disabled);
     }
 
-    void setBaud(long baud){
-      this->baud_= baud;
-    }
-
-    int getBaud(){return baud_;}
-
-    void init(){
-        iostream.baud(baud_);
-    }
-
-    int read(){
-        if (iostream.readable()) {
-            return iostream.getc();
-        } else {
-            return -1;
-        }
+    int read(uint8_t* data, int length){
+        iostream.set_blocking(false);
+        int res = iostream.read(data,length);
+        iostream.set_blocking(true);
+        return res > 0 ? res : -1;
     };
+
     void write(uint8_t* data, int length) {
-        for (int i=0; i<length; i++)
-             iostream.putc(data[i]);
+        iostream.write(data,length);
     }
 
     unsigned long time()
@@ -61,9 +49,10 @@ class MbedHardware {
     }
 
   protected:
-    BufferedSerial iostream;
-    long baud_;
+    UARTSerial iostream;
+#if ROSSERIAL_RTOS_KERNEL_MS_TICK == 0
     Timer t;
+#endif
 };
 
 
