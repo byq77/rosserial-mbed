@@ -13,7 +13,20 @@ Condensed, step by step recipe:
 
 This library is compatible with Mbed CLI tools. You can change default Serial pins and baudrate used by rosserial in `mbed_app.json`. 
 
-Example:
+**Available options**:
+
+* `"rosserial-mbed.tx_pin"` - serial tx pin
+* `"rosserial-mbed.rx_pin"` - serial rx pin
+* `"rosserial-mbed.baudrate"` - serial baudrate
+* `"rosserial-mbed.in_buffer_size"` - node input buffer size (default: 512)
+* `"rosserial-mbed.out_buffer_size"` - node output buffer size (default: 512) 
+* `"rosserial-mbed.rtos_kernel_ms_tick"` - use kernel_ms_tick instead Ticker 
+
+`rosserial-mbed` uses `UARTSerial` library that has following configuration options:
+* `"drivers.uart-serial-rxbuf-size"` - input buffer,
+* `"drivers.uart-serial-txbuf-size"`- output buffer,
+
+**Example:**
 
 ```json
 {
@@ -21,7 +34,10 @@ Example:
         "*": {
             "rosserial-mbed.tx_pin": "MY_TX_PIN",
             "rosserial-mbed.rx_pin": "MY_RX_PIN",
-            "rosserial-mbed.baudrate": 230400
+            "rosserial-mbed.baudrate": 230400,
+            "drivers.uart-serial-rxbuf-size": 512,
+            "drivers.uart-serial-txbuf-size": 512,
+            "rosserial-mbed.rtos_kernel_ms_tick": 1
         }
     }
 }
