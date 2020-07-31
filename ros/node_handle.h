@@ -452,14 +452,13 @@ public:
   }
 
   /* Register a new subscriber */
-  template<typename SubscriberT>
-  bool subscribe(SubscriberT& s)
+  bool subscribe(Subscriber_& s)
   {
     for (int i = 0; i < MAX_SUBSCRIBERS; i++)
     {
       if (subscribers[i] == 0) // empty slot
       {
-        subscribers[i] = static_cast<Subscriber_*>(&s);
+        subscribers[i] = &s;
         s.id_ = i + 100;
         return true;
       }
@@ -472,16 +471,8 @@ public:
   bool advertiseService(ServiceServer<MReq, MRes, ObjT>& srv)
   {
     bool v = advertise(srv.pub);
-    for (int i = 0; i < MAX_SUBSCRIBERS; i++)
-    {
-      if (subscribers[i] == 0) // empty slot
-      {
-        subscribers[i] = static_cast<Subscriber_*>(&srv);
-        srv.id_ = i + 100;
-        return v;
-      }
-    }
-    return false;
+    bool w = subscribe(srv);
+    return w && v;
   }
 
   /* Register a new Service Client */
@@ -489,16 +480,8 @@ public:
   bool serviceClient(ServiceClient<MReq, MRes>& srv)
   {
     bool v = advertise(srv.pub);
-    for (int i = 0; i < MAX_SUBSCRIBERS; i++)
-    {
-      if (subscribers[i] == 0) // empty slot
-      {
-        subscribers[i] = static_cast<Subscriber_*>(&srv);
-        srv.id_ = i + 100;
-        return v;
-      }
-    }
-    return false;
+    bool w = subscribe(srv);
+    return w && v;
   }
 
   void negotiateTopics()
