@@ -53,6 +53,7 @@ public:
   virtual int publish(int id, const Msg* msg) = 0;
   virtual int spinOnce() = 0;
   virtual bool connected() = 0;
+  virtual bool timeSynced() = 0;
 };
 }
 
@@ -197,6 +198,7 @@ protected:
   int checksum_;
 
   bool configured_;
+  bool time_synced_;
 
   /* used for syncing the time */
   uint32_t last_sync_time;
@@ -218,7 +220,7 @@ public:
     uint32_t c_time = hardware_.time();
     if ((c_time - last_sync_receive_time) > (SYNC_SECONDS * 2200))
     {
-      configured_ = false;
+      configured_ = time_synced_ = false;
     }
 
     /* reset if message has timed out */
@@ -275,7 +277,7 @@ public:
               else if (hardware_.time() - c_time > (SYNC_SECONDS * 1000))
               {
                   /* We have been stuck in spinOnce too long, return error */
-                  configured_ = false;
+                  configured_ = time_synced_ = false;
                   return SPIN_TIMEOUT;
               }
           }
@@ -340,6 +342,7 @@ public:
                   else if (topic_ == TopicInfo::ID_TIME)
                   {
                       syncTime(message_in);
+                      time_synced_ = true;
                   }
                   else if (topic_ == TopicInfo::ID_PARAMETER_REQUEST)
                   {
@@ -348,7 +351,7 @@ public:
                   }
                   else if (topic_ == TopicInfo::ID_TX_STOP)
                   {
-                      configured_ = false;
+                      configured_ = time_synced_ = false;
                   }
                   else
                   {
@@ -381,6 +384,11 @@ public:
   /********************************************************************
    * Time functions
    */
+
+  virtual bool timeSynced()
+  {
+    return time_synced_;
+  };
 
   void requestSyncTime()
   {
