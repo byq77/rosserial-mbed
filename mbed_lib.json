@@ -39,7 +39,7 @@
         {
             "rosserial-mbed.tx_pin": "RPI_SERIAL_TX",
             "rosserial-mbed.rx_pin": "RPI_SERIAL_RX",
-            "rosserial-mbed.baudrate": 500000,
+            "rosserial-mbed.baudrate": 525000,
             "rosserial-mbed.rtos_kernel_ms_tick": 1
         }
     }
