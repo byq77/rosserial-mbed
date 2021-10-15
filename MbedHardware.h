@@ -4,6 +4,30 @@
 #include "mbed.h"
 #include "UARTSerial.h"
 
+#ifndef ROSSERIAL_TX
+#   define ROSSERIAL_TX USBTX
+#endif
+
+#ifndef ROSSERIAL_RX
+#   define ROSSERIAL_RX USBRX
+#endif
+
+#ifndef ROSSERIAL_BAUDRATE
+#   define ROSSERIAL_BAUDRATE 115200
+#endif
+
+#ifndef ROSSERIAL_INPUT_BUFFER_SIZE
+#   define ROSSERIAL_INPUT_BUFFER_SIZE 512
+#endif
+
+#ifndef ROSSERIAL_OUTPUT_BUFFER_SIZE
+#   define ROSSERIAL_OUTPUT_BUFFER_SIZE 512
+#endif
+
+#ifndef ROSSERIAL_RTOS_KERNEL_MS_TICK
+#   define ROSSERIAL_RTOS_KERNEL_MS_TICK 0
+#endif
+
 class MbedHardware
 {
 public:
