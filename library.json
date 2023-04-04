@@ -1,0 +1,9 @@
+{
+    "name": "rosserial-mbed",
+    "version": "1.0.0",
+    "description": "Mbed rosserial library for ROSbot 2.0",
+    "keywords": "pio, ros, rosserial",
+    "build": {
+      "builder": "MbedLibBuilder"
+    }
+  }
